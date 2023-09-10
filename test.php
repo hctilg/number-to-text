@@ -1,6 +1,6 @@
 <?php
 
-$number_to_text = require_once('number_to_text.php');
+$number_to_text = require_once('number-to-text.php');
 
 if (basename(__FILE__) == basename($_SERVER["SCRIPT_FILENAME"])) {
   $test_cases = [];
@@ -18,7 +18,7 @@ if (basename(__FILE__) == basename($_SERVER["SCRIPT_FILENAME"])) {
     '10000'=> 'ده هزار',
     '01000'=> 'یک هزار',
     '100.003'=> 'صد و سه هزارم',
-    '00100.00100'=> 'صد و یک هزارم'
+    '-۷.۱۱'=> 'منفی هفت و یازده صدم'
   ] as $input => $output) $test_cases[] = [
     'input'=> $input,
     'output'=> $output
@@ -138,13 +138,13 @@ document.addEventListener('DOMContentLoaded', ev => {
   document.getElementById('number').onkeyup = ev => {
     var number = (ev.srcElement || ev.target).value ?? '';
     var number_text = document.getElementById('number_text');
-    if (number.trim() === '' || !(new RegExp(/^[\-0\.123456789]+$/).test(number))) {
+    if (number.trim() === '' || !(new RegExp(/^[\-0\.123456789۰۱۲۳۴۵۶۷۸۹]+$/).test(number))) {
       number_text.innerText = 'عدد مورد نظر خود را وارد کنید.';
       return;
     }
     const formData = new FormData();
     formData.append('number', number);
-    fetch('number_to_text.php', { method: 'POST', body: formData })
+    fetch('number-to-text.php', { method: 'POST', body: formData })
     .then(response => response.json())
     .then(data => {
       if (!!data.ok) {

@@ -48,13 +48,30 @@ function number_clean($number, $decimal = false) {
 }
 
 /**
+ * raplace chras
+ * @param string $string
+ * @param array $old
+ * @param array $new
+ * @return string
+ */
+function replace_chars(string $string, array $old, array $new) {
+  if (count($old) !== count($new)) throw new LengthException("Number of elements in lists don't match.", 1);
+  foreach ($old as $index => $char) $string = str_replace($char, $new[$index], $string);
+  return $string;
+}
+
+/**
  * converts numbers to persian text.
  * @param string|int|float $number
  * @return string
  */
 function number_to_text($number) {
 
+  // strip whitespace
   $number = trim("$number");
+
+  // 
+  $number = replace_chars($number, str_split('۰۱۲۳۴۵۶۷۸۹', 2), str_split('0123456789', 1));
 
   if (!number_validator($number)) {
     throw new Exception('parameter type `number` is not a number.', 400);

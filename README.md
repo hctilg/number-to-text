@@ -15,7 +15,7 @@ if (!file_exists("number-to-text.php")) {
 }
 
 // require Library.
-$number_to_text = require_once('number_to_text.php');
+$number_to_text = require_once('number-to-text.php');
 
 $input = '<Your Number>';
 
