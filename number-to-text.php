@@ -319,4 +319,4 @@ if (($_REQUEST['number'] ?? '') === '') {
 }
 
 http_response_code($response['error_code'] ?? 200);
-echo json_encode($response);
+echo json_encode($response, 448);
