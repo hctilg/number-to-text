@@ -269,54 +269,49 @@ function number_to_text($number) {
   return str_clean($result);
 }
 
-// init module
-if (basename(__FILE__) != basename($_SERVER["SCRIPT_FILENAME"])) {
-  return function($params) {
-    return number_to_text($params);
-  };
-}
+if (basename(__FILE__) == basename($_SERVER["SCRIPT_FILENAME"])) {
+  // check cli mode
+  if (php_sapi_name() === 'cli') {
+    if (posix_isatty(STDIN)) /* normal execution */ {
+      try {
+        $input = readline('Say a number: ');
+        $output = number_to_text($input);
+        echo "Result: $output\n";
+      } catch (Exception $e) {
+        $error = $e->getMessage();
+        echo "Error: $error\n";
+      }
+    } else /* pipe execution */ {
+      $stdin_str = fgets(STDIN);
+      try {
+        echo number_to_text($stdin_str);
+      } catch (Exception $e) {
+        echo 'error: ' . $e->getMessage();
+      }
+    }
 
-// check cli mode
-if (php_sapi_name() === 'cli') {
-  if (posix_isatty(STDIN)) /* normal execution */ {
-    try {
-      $input = readline('Say a number: ');
-      $output = number_to_text($input);
-      echo "Result: $output\n";
-    } catch (Exception $e) {
-      $error = $e->getMessage();
-      echo "Error: $error\n";
-    }
-  } else /* pipe execution */ {
-    $stdin_str = fgets(STDIN);
-    try {
-      echo number_to_text($stdin_str);
-    } catch (Exception $e) {
-      echo 'error: ' . $e->getMessage();
-    }
+    exit;
   }
 
-  exit;
-}
+  header('Access-Control-Allow-Origin: *');
+  header('Content-Type: application/json');
+  $response = ['ok' => true];
 
-header('Access-Control-Allow-Origin: *');
-header('Content-Type: application/json');
-$response = ['ok' => true];
-
-if (($_REQUEST['number'] ?? '') === '') {
-  $response['ok'] = false;
-  $response['error_code'] = 400;
-  $response['message'] = 'number is empty';
-} else {
-  $input = $_REQUEST['number'];
-  try {
-    $response['result'] = number_to_text($input);
-  } catch (Exception $e) {
+  if (($_REQUEST['number'] ?? '') === '') {
     $response['ok'] = false;
-    $response['error_code'] = $e->getCode();
-    $response['message'] = $e->getMessage();
+    $response['error_code'] = 400;
+    $response['message'] = 'number is empty';
+  } else {
+    $input = $_REQUEST['number'];
+    try {
+      $response['result'] = number_to_text($input);
+    } catch (Exception $e) {
+      $response['ok'] = false;
+      $response['error_code'] = $e->getCode();
+      $response['message'] = $e->getMessage();
+    }
   }
-}
 
-http_response_code($response['error_code'] ?? 200);
-echo json_encode($response, 448);
+  http_response_code($response['error_code'] ?? 200);
+  echo json_encode($response, 448);
+}

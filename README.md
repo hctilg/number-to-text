@@ -15,11 +15,11 @@ if (!file_exists("number-to-text.php")) {
 }
 
 // require Library.
-$number_to_text = require_once('number-to-text.php');
+require_once('number-to-text.php');
 
 $input = '<Your Number>';
 
-$output = $number_to_text($input);
+$output = number_to_text($input);
 
 echo "Text: $output";
 ```

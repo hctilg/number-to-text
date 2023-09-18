@@ -1,6 +1,6 @@
 <?php
 
-$number_to_text = require_once('number-to-text.php');
+require_once('number-to-text.php');
 
 if (basename(__FILE__) == basename($_SERVER["SCRIPT_FILENAME"])) {
   $test_cases = [];
@@ -29,7 +29,7 @@ if (basename(__FILE__) == basename($_SERVER["SCRIPT_FILENAME"])) {
 
   foreach ($test_cases as $row) {
     try {
-      $output = $number_to_text("$row[input]");
+      $output = number_to_text("$row[input]");
       $row['success'] = md5($output) == md5($row['output']);
       $tested[] = $row;
     } catch (Exception $e) {
